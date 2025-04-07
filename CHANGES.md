@@ -21,5 +21,5 @@
 # Things I just don't know...
 - How to manage a branching strategy (check rubric).
 - Is there even a dev team? Is it one of us?
-
+- Everything is being launched into cloud services using personal (student) account. Is this proper? **IMPORTANT:** Change the subscription ID in main.tf to your own for the structure to build.
  
