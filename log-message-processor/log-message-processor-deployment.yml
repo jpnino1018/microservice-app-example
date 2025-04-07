@@ -1,0 +1,45 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: log-message-processor
+  namespace: microservices
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: log-message-processor
+  template:
+    metadata:
+      labels:
+        app: log-message-processor
+    spec:
+      containers:
+        - name: log-message-processor
+          image: acrformymicroservices.azurecr.io/log-message-processor:latest
+          env:
+            - name: REDIS_HOST
+              value: "microservices-redis.redis.cache.windows.net"
+            - name: REDIS_PORT
+              value: "6379"
+            - name: REDIS_CHANNEL
+              value: "log_channel"
+          resources:
+            limits:
+              memory: "128Mi"
+              cpu: "250m"
+          imagePullPolicy: Always
+      restartPolicy: Always
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: log-message-processor
+  namespace: microservices
+spec:
+  selector:
+    app: log-message-processor
+  ports:
+    - protocol: TCP
+      port: 5000
+      targetPort: 5000
+  type: ClusterIP
