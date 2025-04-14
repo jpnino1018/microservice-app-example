@@ -1,24 +1,18 @@
-#FIX DOCKERFILE OR RESOLVE PROPER VERSION
+# Stage 1: Build
 FROM golang:1.18 AS builder
-
 WORKDIR /app
-
-RUN go install github.com/golang/dep/cmd/dep@latest
-
-COPY Gopkg.toml Gopkg.lock ./
-
-RUN dep ensure --vendor-only
 
 COPY . .
 
-RUN go build -o auth-api
+RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -o auth-api
 
+# Stage 2: Slim image
 FROM alpine:latest
-
 WORKDIR /root/
 
 COPY --from=builder /app/auth-api .
 
-EXPOSE 8000
+RUN chmod +x auth-api
 
+EXPOSE 8000
 CMD ["./auth-api"]
