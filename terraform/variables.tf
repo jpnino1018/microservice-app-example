@@ -1,51 +1,77 @@
 variable "subscription_id" {
-    default = ""
+  description = "Azure Subscription ID"
+  type        = string
+  default     = "94101e63-55cd-434a-bf37-69fa8ccffe39"
 }
 
 variable "resource_group_name" {
-  default = "microservices-rg"
+  description = "Name of the Azure Resource Group"
+  type        = string
+  default     = "microservices-rg"
 }
 
 variable "location" {
-  default = "East US"
+  description = "Azure region"
+  type        = string
+  default     = "East US"
 }
 
 variable "acr_name" {
-  default = "acrformymicroservices"
+  description = "Name of the Azure Container Registry (ACR)"
+  type        = string
+  default     = "acrformymicroservices"
 }
 
 variable "aks_name" {
-  default = "microservices-aks"
+  description = "Name of the Azure Kubernetes Service (AKS) cluster"
+  type        = string
+  default     = "microservices-aks"
 }
 
 variable "aks_node_count" {
-  default = 1
+  description = "Number of nodes in the AKS cluster"
+  type        = number
+  default     = 1
 }
 
 variable "aks_node_vm_size" {
-  default = "Standard_B2ms"
+  description = "Size of the virtual machines for AKS nodes"
+  type        = string
+  default     = "Standard_B2ms"
 }
 
 variable "redis_name" {
-  default = "microservices-redis"
+  description = "Name of the Azure Redis Cache instance"
+  type        = string
+  default     = "microservices-redis"
 }
 
 variable "apim_name" {
-  default = "microservices-apim"
+  description = "Name of the Azure API Management service"
+  type        = string
+  default     = "microservices-apim"
 }
 
 variable "apim_publisher_name" {
-  default = "Microservices Inc."
+  description = "Publisher name for API Management"
+  type        = string
+  default     = "Microservices Inc."
 }
 
 variable "apim_publisher_email" {
-  default = "admin@microservices.com"
+  description = "Publisher email for API Management"
+  type        = string
+  default     = "admin@microservices.com"
 }
 
 variable "kubeconfig_path" {
-  default = "kubeconfig.yaml"
+  description = "Path where the Kubernetes configuration file will be saved"
+  type        = string
+  default     = "kubeconfig.yaml"
 }
 
 variable "k8s_namespace" {
-  default = "microservices"
+  description = "Namespace in Kubernetes where the microservices will be deployed"
+  type        = string
+  default     = "microservices"
 }
