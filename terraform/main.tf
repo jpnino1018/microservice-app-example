@@ -1,52 +1,50 @@
 provider "azurerm" {
   features {}
-  #INSERT YOUR SUBSCRIPTION ID
-  subscription_id = ""
+  subscription_id = var.subscription_id
 }
 
-# Resource Group
+provider "kubernetes" {
+  config_path = var.kubeconfig_path
+}
+
 resource "azurerm_resource_group" "microservices_rg" {
-  name     = "microservices-rg"
-  location = "East US"
+  name     = var.resource_group_name
+  location = var.location
 }
 
-# Azure Container Registry (ACR)
 resource "azurerm_container_registry" "acr" {
-  name                = "acrformymicroservices"
+  name                = var.acr_name
   resource_group_name = azurerm_resource_group.microservices_rg.name
   location            = azurerm_resource_group.microservices_rg.location
   sku                 = "Standard"
   admin_enabled       = true
 }
 
-# Azure Kubernetes Service (AKS)
 resource "azurerm_kubernetes_cluster" "aks_cluster" {
-  name                = "microservices-aks"
+  name                = var.aks_name
   location            = azurerm_resource_group.microservices_rg.location
   resource_group_name = azurerm_resource_group.microservices_rg.name
   dns_prefix          = "microservices"
 
   default_node_pool {
     name       = "default"
-    node_count = 1
-    vm_size    = "Standard_B2ms"
+    node_count = var.aks_node_count
+    vm_size    = var.aks_node_vm_size
   }
 
   identity {
     type = "SystemAssigned"
   }
 
-  # Attach ACR to AKS
   role_based_access_control_enabled = true
+
   network_profile {
     network_plugin = "azure"
   }
 }
 
-
-# Azure Redis Cache
 resource "azurerm_redis_cache" "redis_queue" {
-  name                = "microservices-redis"
+  name                = var.redis_name
   location            = azurerm_resource_group.microservices_rg.location
   resource_group_name = azurerm_resource_group.microservices_rg.name
   capacity            = 2
@@ -54,22 +52,17 @@ resource "azurerm_redis_cache" "redis_queue" {
   sku_name            = "Standard"
 }
 
-# Azure API Management
 resource "azurerm_api_management" "apim" {
-  name                = "microservices-apim"
+  name                = var.apim_name
   location            = azurerm_resource_group.microservices_rg.location
   resource_group_name = azurerm_resource_group.microservices_rg.name
-  publisher_name      = "Microservices Inc."
-  publisher_email     = "admin@microservices.com"
+  publisher_name      = var.apim_publisher_name
+  publisher_email     = var.apim_publisher_email
   sku_name            = "Developer_1"
-}
-
-provider "kubernetes" {
-  config_path = "kubeconfig.yaml"
 }
 
 resource "kubernetes_namespace" "microservices_ns" {
   metadata {
-    name = "microservices"
+    name = var.k8s_namespace
   }
 }
