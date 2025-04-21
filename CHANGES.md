@@ -7,12 +7,11 @@
 - - `kubectl apply -f <FOLDER NAME>-deployment.yml`
 
 # Trouble so far...
+***I THINK I FIXED THIS BUT HAVENT TESTED IT***
 - While running the infrastructure for the first time ACR and AKS are NOT connected. In fewer words, access to AKS must be MANUALLY granted to ACR. This is the command to fo it:
   - `az aks update -n <your-aks-cluster-name> -g <your-resource-group> --attach-acr <your-acr-name>`
   
     **THIS SHOULD BE AUTOMATED**
-
-- **auth-api** couldn't be tested locally because an error with dependencies. The image couldn't be loaded into the cloud so the Dockerfile MUST be modified to comply with project requirements and copy the packages provided by the base repository (Gopkg).
 
 # Next steps...
 - Use github secrets or some kind of environment variable manager in order to make our code dynamic (Everything is hardcoded right now).
@@ -21,5 +20,5 @@
 # Things I just don't know...
 - How to manage a branching strategy (check rubric).
 - Is there even a dev team? Is it one of us?
-- Everything is being launched into cloud services using personal (student) account. Is this proper? **IMPORTANT:** Change the subscription ID in main.tf to your own for the structure to build.
+- Everything is being launched into cloud services using personal (student) account. Is this proper? **IMPORTANT:** Change the subscription ID in **variables.tf** to your own for the structure to build.
  
