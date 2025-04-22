@@ -19,6 +19,20 @@ jobs:
         with:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
 
+      - name: Get Redis Primary Key
+        id: redis-key
+        run: |
+          REDIS_KEY=$(az redis list-keys --name microservices-redis --resource-group microservices-rg --query "primaryKey" -o tsv)
+          echo "::add-mask::$REDIS_KEY"
+          echo "REDIS_PASSWORD=$REDIS_KEY" >> $GITHUB_ENV
+
+      - name: Create Redis Secret
+        run: |
+          kubectl create secret generic redis-secret \
+            --namespace microservices \
+            --from-literal=REDIS_PASSWORD="$REDIS_PASSWORD" \
+            --dry-run=client -o yaml | kubectl apply -f -
+
       - name: Azure Container Registry Login
         run: az acr login --name ${{ secrets.AZURE_CONTAINER_REGISTRY }}
 
