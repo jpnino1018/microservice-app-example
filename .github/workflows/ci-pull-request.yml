@@ -1,0 +1,54 @@
+name: Pull Request CI - Microservices
+
+on:
+  pull_request:
+    branches:
+      - main
+      - infra/dev
+
+jobs:
+  validate-build-and-k8s:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout PR code
+        uses: actions/checkout@v3
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+
+      - name: Validate Docker builds
+        run: |
+          for dir in ./auth-api ./frontend ./users-api ./todos-api ./log-message-processor; do
+            echo "Validando build de $dir"
+            docker build -t temp/${dir##*/}:ci $dir
+          done
+
+      - name: Install kubectl
+        uses: azure/setup-kubectl@v3
+        with:
+          version: "latest"
+
+      - name: Validate Kubernetes manifests (dry run)
+        run: |
+          for dir in ./auth-api ./frontend ./users-api ./todos-api ./log-message-processor; do
+            file="$dir/${dir##*/}-deployment.yml"
+            echo "Validando manifest: $file"
+            kubectl apply --dry-run=client -f "$file"
+          done
+
+      - name: Notify Discord on failure
+        if: failure()
+        run: |
+          curl -H "Content-Type: application/json" \
+               -X POST \
+               -d "{\"content\": \"CI falló en el PR #${{ github.event.pull_request.number }}: ${{ github.event.pull_request.html_url }}\"}" \
+               ${{ secrets.DISCORD_WEBHOOK_URL }}
+
+      - name: Notify Discord on success
+        if: success()
+        run: |
+          curl -H "Content-Type: application/json" \
+               -X POST \
+               -d "{\"content\": \"CI pasó exitosamente en el PR #${{ github.event.pull_request.number }}: ${{ github.event.pull_request.html_url }}\"}" \
+               ${{ secrets.DISCORD_WEBHOOK_URL }}

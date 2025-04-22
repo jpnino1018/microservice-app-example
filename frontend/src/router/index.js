@@ -17,7 +17,12 @@ export default new Router({
       name: 'todos',
       component: require('@/components/Todos.vue'),
       beforeEnter: requireLoggedIn
-    }
+    },
+    {
+      path: '/health',
+      name: 'health',
+      component: require('@/components/Health.vue')
+    },
   ]
 })
 
