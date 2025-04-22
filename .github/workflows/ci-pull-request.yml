@@ -29,12 +29,18 @@ jobs:
         with:
           version: "latest"
 
-      - name: Validate Kubernetes manifests (dry run)
+      - name: Get AKS credentials
+        run: |
+          az aks get-credentials --resource-group ${{ secrets.AZURE_RESOURCE_GROUP }} \
+                                 --name ${{ secrets.AKS_CLUSTER_NAME }} \
+                                 --overwrite-existing
+
+      - name: Validate Kubernetes manifests against AKS (dry run server-side)
         run: |
           for dir in ./auth-api ./frontend ./users-api ./todos-api ./log-message-processor; do
             file="$dir/${dir##*/}-deployment.yml"
             echo "Validando manifest: $file"
-            kubectl apply --dry-run=client -f "$file"
+            kubectl apply --dry-run=server -f "$file" --namespace microservices
           done
 
       - name: Notify Discord on failure
