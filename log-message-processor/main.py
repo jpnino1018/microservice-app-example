@@ -16,6 +16,7 @@ if __name__ == '__main__':
     redis_host = os.environ['REDIS_HOST']
     redis_port = int(os.environ['REDIS_PORT'])
     redis_channel = os.environ['REDIS_CHANNEL']
+    redis_password = os.environ.get('REDIS_PASSWORD', None)
     zipkin_url = os.environ['ZIPKIN_URL'] if 'ZIPKIN_URL' in os.environ else ''
     def http_transport(encoded_span):
         requests.post(
@@ -24,7 +25,7 @@ if __name__ == '__main__':
             headers={'Content-Type': 'application/x-thrift'},
         )
 
-    pubsub = redis.Redis(host=redis_host, port=redis_port, db=0).pubsub()
+    pubsub = redis.Redis(host=redis_host, port=redis_port, password=redis_password, db=0).pubsub()
     pubsub.subscribe([redis_channel])
     for item in pubsub.listen():
         try:

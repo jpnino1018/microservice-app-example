@@ -29,6 +29,11 @@ spec:
               value: "6379"
             - name: REDIS_CHANNEL
               value: "log_channel"
+            - name: REDIS_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: redis-secret
+                  key: REDIS_PASSWORD
           livenessProbe:
             httpGet:
               path: /health
