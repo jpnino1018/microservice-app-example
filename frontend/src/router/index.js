@@ -1,7 +1,7 @@
 import Vue from 'vue'
-
 import Auth from '@/auth'
 import Router from 'vue-router'
+
 Vue.use(Router)
 
 export default new Router({
@@ -22,7 +22,7 @@ export default new Router({
       path: '/health',
       name: 'health',
       component: require('@/components/Health.vue')
-    },
+    }
   ]
 })
 

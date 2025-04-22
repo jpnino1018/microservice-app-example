@@ -1,9 +1,9 @@
 <template>
-    <div>OK</div>
+  <div>OK</div>
 </template>
 
 <script>
-    export default {
-    name: "Health",
-    };
+export default {
+  name: 'Health'
+}
 </script>
