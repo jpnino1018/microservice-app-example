@@ -19,6 +19,14 @@ jobs:
         with:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
 
+      - name: Get AKS credentials
+        run: |
+          az aks get-credentials --resource-group ${{ secrets.AZURE_RESOURCE_GROUP }} \
+                                 --name ${{ secrets.AKS_CLUSTER_NAME }} \
+                                 --overwrite-existing
+      - name: Azure Container Registry Login
+        run: az acr login --name ${{ secrets.AZURE_CONTAINER_REGISTRY }}
+
       - name: Get Redis Primary Key
         id: redis-key
         run: |
@@ -33,9 +41,6 @@ jobs:
             --from-literal=REDIS_PASSWORD="$REDIS_PASSWORD" \
             --dry-run=client -o yaml | kubectl apply -f -
 
-      - name: Azure Container Registry Login
-        run: az acr login --name ${{ secrets.AZURE_CONTAINER_REGISTRY }}
-
       - name: Build and push Docker images
         run: |
           for dir in ./auth-api ./frontend ./users-api ./todos-api ./log-message-processor; do
@@ -43,12 +48,6 @@ jobs:
             docker build -t ${{ secrets.AZURE_CONTAINER_REGISTRY }}/$name:latest $dir
             docker push ${{ secrets.AZURE_CONTAINER_REGISTRY }}/$name:latest
           done
-
-      - name: Get AKS credentials
-        run: |
-          az aks get-credentials --resource-group ${{ secrets.AZURE_RESOURCE_GROUP }} \
-                                 --name ${{ secrets.AKS_CLUSTER_NAME }} \
-                                 --overwrite-existing
 
       - name: Apply Kubernetes manifests
         run: |
