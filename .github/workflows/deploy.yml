@@ -4,39 +4,40 @@ on:
   push:
     branches:
       - main
+      - feature/deploy-automation
 
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v3
+      - name: Checkout code
+        uses: actions/checkout@v3
 
-    - name: Login to Azure
-      uses: azure/login@v1
-      with:
-        creds: ${{ secrets.AZURE_CREDENTIALS }}
+      - name: Login to Azure
+        uses: azure/login@v1
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
 
-    - name: Azure Container Registry Login
-      run: az acr login --name ${{ secrets.AZURE_CONTAINER_REGISTRY }}
+      - name: Azure Container Registry Login
+        run: az acr login --name ${{ secrets.AZURE_CONTAINER_REGISTRY }}
 
-    - name: Build and push Docker images
-      run: |
-        for dir in ./auth-api ./frontend ./users-api ./todos-api ./log-message-processor; do
-          name=$(basename $dir)
-          docker build -t ${{ secrets.AZURE_CONTAINER_REGISTRY }}/$name:latest $dir
-          docker push ${{ secrets.AZURE_CONTAINER_REGISTRY }}/$name:latest
-        done
+      - name: Build and push Docker images
+        run: |
+          for dir in ./auth-api ./frontend ./users-api ./todos-api ./log-message-processor; do
+            name=$(basename $dir)
+            docker build -t ${{ secrets.AZURE_CONTAINER_REGISTRY }}/$name:latest $dir
+            docker push ${{ secrets.AZURE_CONTAINER_REGISTRY }}/$name:latest
+          done
 
-    - name: Get AKS credentials
-      run: |
-        az aks get-credentials --resource-group ${{ secrets.AZURE_RESOURCE_GROUP }} \
-                               --name ${{ secrets.AKS_CLUSTER_NAME }} \
-                               --overwrite-existing
+      - name: Get AKS credentials
+        run: |
+          az aks get-credentials --resource-group ${{ secrets.AZURE_RESOURCE_GROUP }} \
+                                 --name ${{ secrets.AKS_CLUSTER_NAME }} \
+                                 --overwrite-existing
 
-    - name: Apply Kubernetes manifests
-      run: |
-        for dir in ./auth-api ./frontend ./users-api ./todos-api ./log-message-processor; do
-          kubectl apply -f $dir/${dir##*/}-deployment.yml --namespace microservices
-        done
+      - name: Apply Kubernetes manifests
+        run: |
+          for dir in ./auth-api ./frontend ./users-api ./todos-api ./log-message-processor; do
+            kubectl apply -f $dir/${dir##*/}-deployment.yml --namespace microservices
+          done
