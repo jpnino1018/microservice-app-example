@@ -8,7 +8,7 @@ on:
       - infra/dev
     paths:
       - "**.tf"
-      - "**/infra.yaml"
+      - "**/infra.yml"
 
 jobs:
   terraform:
