@@ -3,12 +3,15 @@ name: Deploy to Azure Kubernetes Service
 on:
   push:
     branches:
-      - main
+      - master
       - infra/dev
 
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
+
+    env:
+      IMAGE_TAG: ${{ github.sha }}
 
     steps:
       - name: Checkout code
@@ -24,7 +27,7 @@ jobs:
           az aks get-credentials --resource-group ${{ secrets.AZURE_RESOURCE_GROUP }} \
                                  --name ${{ secrets.AKS_CLUSTER_NAME }} \
                                  --overwrite-existing
-                                 
+
       - name: Azure Container Registry Login
         run: az acr login --name ${{ secrets.AZURE_CONTAINER_REGISTRY }}
 
@@ -46,12 +49,24 @@ jobs:
         run: |
           for dir in ./auth-api ./frontend ./users-api ./todos-api ./log-message-processor; do
             name=$(basename $dir)
-            docker build -t ${{ secrets.AZURE_CONTAINER_REGISTRY }}/$name:latest $dir
-            docker push ${{ secrets.AZURE_CONTAINER_REGISTRY }}/$name:latest
+            docker build -t ${{ secrets.AZURE_CONTAINER_REGISTRY }}/$name:${{ env.IMAGE_TAG }} $dir
+            docker push ${{ secrets.AZURE_CONTAINER_REGISTRY }}/$name:${{ env.IMAGE_TAG }}
+          done
+
+      - name: Replace image tag in manifests
+        run: |
+          for dir in ./auth-api ./frontend ./users-api ./todos-api ./log-message-processor; do
+            sed -i "s|image: .*:.*|image: ${{ secrets.AZURE_CONTAINER_REGISTRY }}/$(basename $dir):${{ env.IMAGE_TAG }}|" $dir/${dir##*/}-deployment.yml
           done
 
       - name: Apply Kubernetes manifests
         run: |
           for dir in ./auth-api ./frontend ./users-api ./todos-api ./log-message-processor; do
             kubectl apply -f $dir/${dir##*/}-deployment.yml --namespace microservices
+          done
+
+      - name: Rollout restart (optional refuerzo)
+        run: |
+          for app in auth-api frontend users-api todos-api log-message-processor; do
+            kubectl rollout restart deployment $app --namespace microservices
           done
