@@ -25,7 +25,7 @@ variable "acr_name" {
 variable "aks_name" {
   description = "Name of the Azure Kubernetes Service (AKS) cluster"
   type        = string
-  default     = "microservices-aks-test"
+  default     = "microservices-aks"
 }
 
 variable "aks_node_count" {

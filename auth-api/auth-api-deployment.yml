@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
         - name: auth-api
-          image: acrformymicroservices.azurecr.io/auth-api:latest
+          image: acrformymicroservices-test.azurecr.io/auth-api:latest
           imagePullPolicy: Always
           env:
             - name: AUTH_API_PORT

@@ -11,9 +11,9 @@
     To build and upload the images, the following commands must be executed (manually for the moment) inside the corresponding directory (replace `<FOLDER_NAME>` with the actual name of the microservice):
 
     ```bash
-    docker build -t acrformymicroservices.azurecr.io/<FOLDER NAME>:latest .
+    docker build -t acrformymicroservices-test.azurecr.io/<FOLDER NAME>:latest .
 
-    docker push acrformymicroservices.azurecr.io/<FOLDER NAME>:latest
+    docker push acrformymicroservices-test.azurecr.io/<FOLDER NAME>:latest
     ```
 
 - .yml files were created for each microservice in order to specify variables and run containers using Kubernetes cluster (AKS). 
