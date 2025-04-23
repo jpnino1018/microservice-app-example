@@ -16,6 +16,7 @@ spec:
       containers:
         - name: log-message-processor
           image: acrformymicroservices.azurecr.io/log-message-processor:latest
+          imagePullPolicy: Always
           env:
             - name: REDIS_HOST
               value: "microservices-redis.redis.cache.windows.net"
