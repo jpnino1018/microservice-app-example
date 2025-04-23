@@ -24,6 +24,7 @@ jobs:
           az aks get-credentials --resource-group ${{ secrets.AZURE_RESOURCE_GROUP }} \
                                  --name ${{ secrets.AKS_CLUSTER_NAME }} \
                                  --overwrite-existing
+                                 
       - name: Azure Container Registry Login
         run: az acr login --name ${{ secrets.AZURE_CONTAINER_REGISTRY }}
 
