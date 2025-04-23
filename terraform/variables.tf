@@ -19,7 +19,7 @@ variable "location" {
 variable "acr_name" {
   description = "Name of the Azure Container Registry (ACR)"
   type        = string
-  default     = "acrformymicroservices-test"
+  default     = "acrformymicroservicestest"
 }
 
 variable "aks_name" {
