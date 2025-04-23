@@ -8,6 +8,7 @@ on:
       - infra/dev
     paths:
       - "**.tf"
+      - "**/infra.yaml"
 
 jobs:
   terraform:
@@ -37,12 +38,12 @@ jobs:
         working-directory: terraform
 
       - name: Terraform Plan
-        run: terraform plan -var-file="terraform.tfvars"
+        run: terraform plan
         working-directory: terraform
 
       - name: Terraform Apply (automatic mode)
         if: github.ref == 'refs/heads/master'
-        run: terraform apply -auto-approve -var-file="terraform.tfvars"
+        run: terraform apply -auto-approve
         working-directory: terraform
 
       - name: Notify Discord on failure
