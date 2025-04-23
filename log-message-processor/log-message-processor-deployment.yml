@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
         - name: log-message-processor
-          image: acrformymicroservices.azurecr.io/log-message-processor:latest
+          image: acrformymicroservices-test.azurecr.io/log-message-processor:latest
           imagePullPolicy: Always
           env:
             - name: REDIS_HOST

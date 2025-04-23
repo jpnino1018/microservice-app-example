@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
         - name: frontend
-          image: acrformymicroservices.azurecr.io/frontend:latest
+          image: acrformymicroservices-test.azurecr.io/frontend:latest
           imagePullPolicy: Always
           ports:
             - containerPort: 8080

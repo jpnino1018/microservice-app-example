@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
         - name: todos-api
-          image: acrformymicroservices.azurecr.io/todos-api:latest
+          image: acrformymicroservices-test.azurecr.io/todos-api:latest
           imagePullPolicy: Always
           ports:
             - containerPort: 8082
