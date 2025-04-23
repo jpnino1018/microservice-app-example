@@ -3,7 +3,7 @@ name: Pull Request CI - Microservices
 on:
   pull_request:
     branches:
-      - main
+      - master
       - infra/dev
 
 jobs:
