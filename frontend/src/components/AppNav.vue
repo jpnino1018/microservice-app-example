@@ -1,6 +1,6 @@
 
 <template>
-  <nav class="navbar navbar-toggleable-md navbar-inverse bg-inverse fixed-top">
+  <nav class="navbar navbar-toggleable-md navbar-inverse bg-primary fixed-top">
     <a class="navbar-brand" href="#">70d0 0v3r3n61n33r1n6</a>
     <ul class="navbar-nav mr-auto">
       <li class="nav-item" v-show="isAdmin()">
