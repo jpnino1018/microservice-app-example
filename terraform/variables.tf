@@ -19,13 +19,13 @@ variable "location" {
 variable "acr_name" {
   description = "Name of the Azure Container Registry (ACR)"
   type        = string
-  default     = "acrformymicroservices"
+  default     = "acrformymicroservices-test"
 }
 
 variable "aks_name" {
   description = "Name of the Azure Kubernetes Service (AKS) cluster"
   type        = string
-  default     = "microservices-aks"
+  default     = "microservices-aks-test"
 }
 
 variable "aks_node_count" {
