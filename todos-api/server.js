@@ -2,6 +2,7 @@
 const express = require('express')
 const bodyParser = require("body-parser")
 const jwt = require('express-jwt')
+const unless = require('express-unless');
 
 const ZIPKIN_URL = process.env.ZIPKIN_URL || 'http://127.0.0.1:9411/api/v2/spans';
 const {Tracer, 
@@ -46,8 +47,12 @@ const recorder = new  BatchRecorder({
 const localServiceName = 'todos-api';
 const tracer = new Tracer({ctxImpl, recorder, localServiceName});
 
+const jwtMiddleware = jwt({ secret: jwtSecret });
+jwtMiddleware.unless = unless;
 
-app.use(jwt({ secret: jwtSecret }))
+app.use(jwtMiddleware.unless({ path: ['/health'] }));
+
+// app.use(jwt({ secret: jwtSecret }))
 app.use(zipkinMiddleware({tracer}));
 app.use(function (err, req, res, next) {
   if (err.name === 'UnauthorizedError') {
