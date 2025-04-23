@@ -9,8 +9,6 @@
 
 ## Table of contents
 
-x. [](#)
-
 1. [Overview](#overview)
    - [Components](#components)
    - [Original Architecture](#original-architecture)
@@ -20,8 +18,10 @@ x. [](#)
    - [Resource Description](#resource-description)
    - [Docker Images](#docker-images)
    - [Network Diagram](#network-diagram)
-5. [Design patterns](#design-patterns)
-
+5. [Design Patterns](#design-patterns)
+6. [Automation](#automation)
+   - [Pipelines for Develoment](#pipelines-for-development)
+   - [Pipelines for Infraestructure](#pipelines-for-infraestructure)
 
 ---
 
@@ -234,7 +234,7 @@ As part of the solution's architecture, three cloud design patterns were incorpo
 
 ---
 
-## Automatization
+## Automation
 
 This project incorporates a three pipelines,using GitHub Actions, to ensure reliability, consistency, and automation across our microservices and infrastructure. Two of them are prepared to test and deploy the changes in the code, while the last one is designed to apply the changes on the infraestructure.
 
