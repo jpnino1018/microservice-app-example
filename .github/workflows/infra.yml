@@ -8,7 +8,6 @@ on:
       - infra/dev
     paths:
       - "**.tf"
-      - ".github/workflows/infra.yml"
 
 jobs:
   terraform:
@@ -31,16 +30,20 @@ jobs:
 
       - name: Terraform Init
         run: terraform init
+        working-directory: terraform
 
       - name: Syntax validation
         run: terraform validate
+        working-directory: terraform
 
       - name: Terraform Plan
         run: terraform plan -var-file="terraform.tfvars"
+        working-directory: terraform
 
       - name: Terraform Apply (automatic mode)
         if: github.ref == 'refs/heads/master'
         run: terraform apply -auto-approve -var-file="terraform.tfvars"
+        working-directory: terraform
 
       - name: Notify Discord on failure
         if: failure()
